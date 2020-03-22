@@ -1,6 +1,6 @@
-2017 - TSE - Automatic Software Repair A Survey
+# 2017 - TSE - Automatic Software Repair A Survey
 
-- *in-house* to fix a buggy program with observable failures in some test cases.
+*in-house* to fix a buggy program with observable failures in some test cases.
 
 ## Localization
 
@@ -55,8 +55,8 @@
   | access control violations                | insertion of role checks                                   |                                          |                                        |
   | memory leaks                             | insertion of *free()* statements                           |                                          |                                        |
 
-### Fix recommenders
+## Fix recommenders
 
-### Empirical evidence
+## Empirical evidence
 
-### Open challenges
+## Open challenges
