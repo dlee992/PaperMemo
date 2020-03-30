@@ -11,7 +11,7 @@
 
 ## 1. Generation of Input Data Graph
 
-- 
+- what is ***GetMId() *** ?
 
 ## 2. String transformation
 
