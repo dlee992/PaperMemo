@@ -24,7 +24,7 @@
 
 - Approximation
 
-### Generate-and-validate 
+### Generate-and-validate
 
 - **unsound and incomplete**, thus need validation based on test cases
 
