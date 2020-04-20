@@ -35,9 +35,13 @@ $$
 
 首先有个待修复的程序 buggy program, 然后有个单元测试集 test suite;先用统计的方式概率性的定位出可能出错的代码行号(Tarantula), 得出可能出错的 statement ranking; 然后用KLEE(符号执行工具)结合具体的test suite和程序里的assert语句,来给出符号化的repair constraint; 最后利用程序合成(program synthesis)的方式找到符合条件的表达式或者if-condition, 最终验证得到的repair是否能通过所有的test suite.
 
-` DirectFix`
+` DirectFix`感觉这是一篇不奏效的工作, 如果可以把多个位置的表达式抽象成符号,然后编码成约束,但是又将不同组的test  case的变量用不同符号替换,这和单独求解又有什么区别呢?而且当位置很多时,这时候不还是会约束表达的空间爆炸么?
 
-`Angelix`
+`Angelix`: 被符号化的表达式的路径条件`path condition(program state before the evaluation of this expression)`是否可能包含之前被符号化的表达式呢?如果是的话, 多次迭代之后, 这个路径条件岂不是很复杂?
+
+这文章说了半天`our novel lightweight program-size-independent semantic signature is the improvement of the heavyweight semantic signature used in our prior work DirectFix`, 但是我没看明白究竟哪里体现了轻量级的特性. OK, for solving my question, I find a video from `Claire Le Goues`, 她不是原作者,但是她的演讲里提到了这份工作.
+
+In this video, she said: `angelix cares about path condition changes, not path condition itself, so the size of path condition is independent with program size.` 我感觉好像理解了,但又不是非常确信,总觉得在最坏情况下,这两者的大小并不是独立的.
 
 
 
