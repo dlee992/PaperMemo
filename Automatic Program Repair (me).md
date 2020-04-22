@@ -43,7 +43,7 @@ $$
 
 In this video, she said: `angelix cares about path condition changes, not path condition itself, so the size of path condition is independent with program size.` 我感觉好像理解了,但又不是非常确信,总觉得在最坏情况下,这两者的大小并不是独立的.
 
-`SearchRepair:`
+`SearchRepair:`  
 
 
 
