@@ -22,7 +22,7 @@
 
 ## 基于约束求解的技术流派
 
-`SemFix, Nopol, DirectFix, Angelix, SearchRepair (2013~2016)`
+`SemFix, Nopol, DirectFix, Angelix, SearchRepair, JFix, S3 (2013~2016)`
 
 `SemFix:` use symbolic execution (`delta debugging`) to infer specification,  use `component-based synthesis` to find a patch
 $$
@@ -43,12 +43,16 @@ $$
 
 In this video, she said: `angelix cares about path condition changes, not path condition itself, so the size of path condition is independent with program size.` 我感觉好像理解了,但又不是非常确信,总觉得在最坏情况下,这两者的大小并不是独立的.
 
-`SearchRepair:`  
+`JFix:` 这是一个基于 `Java Symbolic PathFinder (SPF)` 写的一个基于语义的程序合成工具(框架), 一篇 Tool Demo. 集成了 `Angelix` 和 另外两个 `SyGuS` 的 `solvers`.
 
-
-
-
+`SearchRepair:`  这篇文章搜索 `SMT-encoded code database`,返回相符的代码片段, 然后尝试改编这些代码作为补丁修复的方案. `Semantic` + `Search`. 从实验对象上看，依然只能修复简单程序（返回几个数中的最大数）．这篇工作的 `Constraint Encoding` 和 `code fragment searching` 看上去都太暴力了, 该实现机制虽然美好, 但是实现策略几乎都是暴力, 非常难以应用到真实程序中.  对很多实际情况的考虑估计都很难周到. 每个`benchmark`程序的`KLEE test`数量不超过10个,足见代码片段之小.
 
 ## 基于搜索的技术流派
+
+`S3,`
+
+`S3:`这文章指出`Angelix`的问题, 
+
+
 
 ## 基于机器(深度)学习的技术流派
