@@ -22,7 +22,7 @@
 
 ## 基于约束求解的技术流派
 
-`SemFix, Nopol, DirectFix, Angelix, SearchRepair (2013~2016)`
+`SemFix, Nopol, DirectFix, Angelix, SearchRepair, S3 (2013~2017)`
 
 `SemFix:` use symbolic execution (`delta debugging`) to infer specification,  use `component-based synthesis` to find a patch
 $$
@@ -43,12 +43,20 @@ $$
 
 In this video, she said: `angelix cares about path condition changes, not path condition itself, so the size of path condition is independent with program size.` 我感觉好像理解了,但又不是非常确信,总觉得在最坏情况下,这两者的大小并不是独立的.
 
-`SearchRepair:`  
+`SearchRepair:`  。。。
 
+`S3`：所有研究工作，都是先看各类技术***行不行***，再看结果的质量***好不好***。`Angelix`已经实践证明了`pure semantics-based technique`是feasible的，`S3`在此基础上，想进一步生成质量更好的补丁。
 
+本文的有趣之处在于：依然使用 `符号执行` 技术来获取 `Input/Output constraints`，合成阶段却不再使用SMT solver，而是直接`枚举`，一方面是只考虑 `整数和布尔表达式`，枚举空间不巨大，另一方面使用优先级，从简单到复杂的组件来构造补丁；同时采用所谓 `syntactic and semantic features` 来帮助对补丁排序，这些 `ad-hoc heuristics` 方法自然都是听上去合理的。
+
+获取 `Input/Output constraints`：这里需要指出，`inputs`就是当前被符号化的表达式可以获得局部变量和常量，那什么是最终的`outputs`呢？来自于test case的`assertion`语句，还是别的什么地方？
+
+本方法似乎在说明：使用`SMT solver`依然过于沉重，优化后的枚举/搜索算法的计算能力是`feasible`。这里的符号执行技术用到了 `Java Symbolic PathFinder (SPF)`，可以研究一下。
 
 
 
 ## 基于搜索的技术流派
 
-## 基于机器(深度)学习的技术流派
+
+
+##  基于机器(深度)学习的技术流派
