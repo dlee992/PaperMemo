@@ -43,16 +43,31 @@ $$
 
 In this video, she said: `angelix cares about path condition changes, not path condition itself, so the size of path condition is independent with program size.` 我感觉好像理解了,但又不是非常确信,总觉得在最坏情况下,这两者的大小并不是独立的.
 
+`SearchRepair:`  。。。
+
+`S3`：所有研究工作，都是先看各类技术***行不行***，再看结果的质量***好不好***。`Angelix`已经实践证明了`pure semantics-based technique`是feasible的，`S3`在此基础上，想进一步生成质量更好的补丁。
+
+本文的有趣之处在于：依然使用 `符号执行` 技术来获取 `Input/Output constraints`，合成阶段却不再使用SMT solver，而是直接`枚举`，一方面是只考虑 `整数和布尔表达式`，枚举空间不巨大，另一方面使用优先级，从简单到复杂的组件来构造补丁；同时采用所谓 `syntactic and semantic features` 来帮助对补丁排序，这些 `ad-hoc heuristics` 方法自然都是听上去合理的。
+
+获取 `Input/Output constraints`：这里需要指出，`inputs`就是当前被符号化的表达式可以获得局部变量和常量，那什么是最终的`outputs`呢？来自于test case的`assertion`语句，还是别的什么地方？
+
+本方法似乎在说明：使用`SMT solver`依然过于沉重，优化后的枚举/搜索算法的计算能力是`feasible`。这里的符号执行技术用到了 `Java Symbolic PathFinder (SPF)`，可以研究一下。
+
 `JFix:` 这是一个基于 `Java Symbolic PathFinder (SPF)` 写的一个基于语义的程序合成工具(框架), 一篇 Tool Demo. 集成了 `Angelix` 和 另外两个 `SyGuS` 的 `solvers`.
 
 `SearchRepair:`  这篇文章搜索 `SMT-encoded code database`,返回相符的代码片段, 然后尝试改编这些代码作为补丁修复的方案. `Semantic` + `Search`. 从实验对象上看，依然只能修复简单程序（返回几个数中的最大数）．这篇工作的 `Constraint Encoding` 和 `code fragment searching` 看上去都太暴力了, 该实现机制虽然美好, 但是实现策略几乎都是暴力, 非常难以应用到真实程序中.  对很多实际情况的考虑估计都很难周到. 每个`benchmark`程序的`KLEE test`数量不超过10个,足见代码片段之小.
 
 ## 基于搜索的技术流派
 
-`S3,`
-
-`S3:`这文章指出`Angelix`的问题, 
 
 
 
-## 基于机器(深度)学习的技术流派
+##  基于机器(深度)学习的技术流派
+
+
+
+## 关于程序修复的实证研究
+
+### `Overfitting`
+
+`Xuan Bach D. Le 2017`: 即便是`semantics-based techniques`依然存在过度拟合的问题
