@@ -22,6 +22,30 @@
 
 
 
+### srcML
+
+这个工具看起来还不错,可以解析单文件内的宏定义和宏调用(?),
+
+对于不符合C语法的语句,会取反假设它是宏调用,比如list_for_each宏,这个宏在使用的时候是,很好的解析思路,这样不管这个代码gcc/clang能否编译成功,srcML都能给出解析结果(with certain of error recovery):
+
+```C
+list_for_each(pointer, head) {
+    stmt;
+    ...
+}
+```
+
+这个工具将source code转换成 XML格式的AST,之后还可以用处理XML的工具去实现一些功能,比如:
+
+1. **XPath** for constructing source-code queries
+2. **XSLT** for conducting simple transformations
+
+### srcType
+
+这个工具还能做静态类型解析,这里解析特指能够得出程序中function和identifier的变量,对于需要类型推导的程序片段似乎暂不处理.
+
+工具编译了,但不知道怎么执行...
+
 ## 已有论文
 
 ### P. A. Darnell and P. E. Margolis, “The C Preprocessor,” 1991.
@@ -30,7 +54,7 @@
 
 然而,时至今日,却给C代码的重构带来了很大的困难.
 
-### M. D. Ernst, G. J. Badros, and D. Notkin, “An Empirical Analysis of C Preprocessor Use Coping with the Preprocessor,” *TOSEM*, pp. 1–34, 2000.
+### M. D. Ernst, G. J. Badros, and D. Notkin, “An Empirical Analysis of C Preprocessor Use,” *TOSEM*, pp. 1–34, 2000.
 
 实证研究:分析多个应用软件包中对directives和marcos的使用情况,它的实验设置需要细细研究一下.
 
@@ -40,12 +64,16 @@
 
 ### A. GARRIDO, “Program Refactoring in the Presence of Preprocessor Directives,” *Ph.D. thesis*, 2005.
 
+太骚气了,这篇文章用Maude specification language(类似函数式语言)来定义Cpp的语法和语义.
 
+再去现学Maude的成本太大了,关键最后作者也没有开源自己的成果.
 
 ### J. Liebig, S. Apel, C. Lengauer, C. Kästner, and M. Schulze, “An Analysis of the Variability in Forty Preprocessor-Based Software Product Lines,” *ICSE*, pp. 105–114, 2010.
 
 ### M. Hafiz, J. Overbey, F. Behrang, and J. Hall, “OpenRefactory/C: An infrastructure for building correct and complex C transformations,” *WRT*, pp. 1–4, 2013.
 
 ### J. L. Overbey, F. Behrang, and M. Hafiz, “A foundation for refactoring C with macros,” *FSE*, vol. 16-21-Nove, pp. 75–85, 2014.
+
+### F. Medeiros *et al.*, “Discipline Matters: Refactoring of Preprocessor Directives in the #ifdef Hell,” *TSE*, vol. 44, no. 5, pp. 453–469, 2018.
 
 ## 
