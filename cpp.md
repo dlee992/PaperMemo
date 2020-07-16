@@ -1,12 +1,14 @@
 # C Preprocessor
 
-如何在重构或者程序分析的过程中保留cpp原语(directive execution and marco expansion during compiling)非常困难.
+如何在重构或者程序分析的过程中保留cpp原语(directive execution and marco expansion during parsing)非常困难.
 
 本质上,因为cpp grammar和C grammar是两个完全不搭嘎的语法,从definition到parsing都完全不同.
 
-[!!!]目前没有(?)任何商用/开源工具能够完美处理带有cpp原语的C代码重构.
+[!!!]目前没有(?)任何商用/开源工具能够完美(?)处理带有cpp原语的C代码重构.
 
 所以本次报告应当对cpp的处理有一个清晰的认识,处理到什么程度算较为深入,什么程度算牵线处理.
+
+针对#ifdef的条件编译的多样性/变化,可以针对性的做type checking,检测出类型错误(?)
 
 ## 已有工具
 
@@ -16,13 +18,21 @@
 
 但这个工具自己独立编写了针对C和cpp的parser,看博客似乎他们对marco的处理是手工的(?).
 
-首先,kernel里的marco call,应该不会破坏c的语法格式.但是对于条件编译来说,这貌似就不好说了,比如因为条件编译,在不同分支里都对某个变量进行声明和赋值.
-
 ### XRefactory
 
 
 
-### srcML
+### OpenRefactory/C (https://www.linkedin.com/company/openrefactory-inc.)
+
+这是另一个框架,但是我没有看到他们开源的代码.
+
+声称能做不少C的static analysis,包括:name binding analysis, type analysis, control flow analysis, alias analysis, data flow analysis, and dependency analysis.
+
+和C的refactoring.
+
+他们开公司了...
+
+### srcML toolkit
 
 这个工具看起来还不错,可以解析单文件内的宏定义和宏调用(?),
 
@@ -37,14 +47,29 @@ list_for_each(pointer, head) {
 
 这个工具将source code转换成 XML格式的AST,之后还可以用处理XML的工具去实现一些功能,比如:
 
-1. **XPath** for constructing source-code queries
-2. **XSLT** for conducting simple transformations
+1. **XPath** for constructing source-code queries (?)
+2. **XSLT** for conducting simple transformations (?)
 
 ### srcType
 
-这个工具还能做静态类型解析,这里解析特指能够得出程序中function和identifier的变量,对于需要类型推导的程序片段似乎暂不处理.
+这个工具还能做静态类型解析,这里解析特指能够得出程序中function和identifier的类型,对于需要类型推导的程序片段似乎暂不处理.
 
 工具编译了,但不知道怎么执行...
+
+### TypeConf (handle #ifdef variability, expand file inclusion and marcos)
+
+这个工具已经开源在GitHub了,我可以花点时间去尝试实际执行一下这个程序,以便对整体有更好的了解.
+
+1. Lexer: stringification, (lexical macros & syntax macros)
+2. parser:
+3. type checker:
+4. others, e.g., refactoring:
+
+### SuperC
+
+震惊了,这篇文章声称完全解决了Cpp的历史遗留问题?还说可以吊打TypeConf?另外还提到了1993年的MAPR工具.
+
+
 
 ## 已有论文
 
@@ -70,10 +95,32 @@ list_for_each(pointer, head) {
 
 ### J. Liebig, S. Apel, C. Lengauer, C. Kästner, and M. Schulze, “An Analysis of the Variability in Forty Preprocessor-Based Software Product Lines,” *ICSE*, pp. 105–114, 2010.
 
+### M. Gligoric, F. Behrang, Y. Li, J. Overbey, M. Hafiz, and D. Marinov, “Systematic testing of refactoring engines on real software projects,” *ECOOP*, vol. 7920 LNCS, pp. 629–653, 2013.
+
+本文是从testing refactoring engines的角度,系统地测试了Eclipse的JDT/CDT中用于重构Java(20+)/C(5)代码的refactoring engines,发现了previous-unknown bugs (100+),并报告给了Eclipse developers.
+
 ### M. Hafiz, J. Overbey, F. Behrang, and J. Hall, “OpenRefactory/C: An infrastructure for building correct and complex C transformations,” *WRT*, pp. 1–4, 2013.
+
+
 
 ### J. L. Overbey, F. Behrang, and M. Hafiz, “A foundation for refactoring C with macros,” *FSE*, vol. 16-21-Nove, pp. 75–85, 2014.
 
+核心思想我想了一下:就是说不是按照传统的思路,在特定重构策略前,有任何的promise,而是在重构前/后建立一个PPDG(preprocessor dependence graph),然后对比两者是否有差异.
+
 ### F. Medeiros *et al.*, “Discipline Matters: Refactoring of Preprocessor Directives in the #ifdef Hell,” *TSE*, vol. 44, no. 5, pp. 453–469, 2018.
 
-## 
+
+
+## 已有IDE的重构功能
+
+### Visual Studio Code
+
+貌似只支持rename操作,提取方法不行.
+
+### Eclipse CDT (C/C++ Development Tool)
+
+
+
+### CLion
+
+貌似提取方法都可用,而且工作挺正常的.
