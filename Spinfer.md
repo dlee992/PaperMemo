@@ -34,6 +34,9 @@
   - [ ] 1531373179_2018-07-11_bcd2c9f33559_xfs_defer.c: xfs_defer_init: 这个not apply很尴尬，这就是被修改的API，它自身当然是不一样的修改了。
 - [ ] dmabuf: 典型案例，rule 1的context code就是函数定义。奇怪的是最后的5/7,又没有单独列出哪两个functions没有被正确处理。其中一个是metafunction的修改（详见 1475670104_2016-10-05_a4fce9cb782a_drm_prime.c.res.c: drm_gem_dmabuf_export）。**那另一个究竟是啥？没找到。**
 - [ ] drm_sched: 完美处理，简单粗暴，一个规则通吃
+- [ ] early_memunmap: 完美处理，简单粗暴，一个规则通吃
+- [ ] gpiod: 
+- [ ] iio_device_alloc:
 - [ ] 
 
 ### Data analysis: 2018 part
