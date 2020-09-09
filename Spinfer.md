@@ -32,7 +32,9 @@
   - [ ] 1370864106_2013-06-10_eed5d29d7818_xilinx_emaclite.c: xemaclite_of_probe: 也是微小的变动，其实能生成对应规则，但是最后合成的规则里没有体现出来。
 - [ ] dfops:规则2非常奇怪，(*E2)->t_dfops，为什么非要写成这种形式，直接写成 E2->t_dfops，一样可以用。感觉rule 2和rule 3并不冲突啊，不知为何是两条规则，而且还带了一个 false positive（**实现错误？**）。rule 4就是指针为空。
   - [ ] 1531373179_2018-07-11_bcd2c9f33559_xfs_defer.c: xfs_defer_init: 这个not apply很尴尬，这就是被修改的API，它自身当然是不一样的修改了。
-- [ ] dmabuf: 
+- [ ] dmabuf: 典型案例，rule 1的context code就是函数定义。奇怪的是最后的5/7,又没有单独列出哪两个functions没有被正确处理。其中一个是metafunction的修改（详见 1475670104_2016-10-05_a4fce9cb782a_drm_prime.c.res.c: drm_gem_dmabuf_export）。**那另一个究竟是啥？没找到。**
+- [ ] drm_sched: 完美处理，简单粗暴，一个规则通吃
+- [ ] 
 
 ### Data analysis: 2018 part
 
