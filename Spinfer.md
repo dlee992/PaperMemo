@@ -50,7 +50,7 @@
   - [ ] 1435701513_2015-06-30_c859aa83113d_util.c: ipc_free: 奇葩的地方在于这个函数前后完全一致，没有任何变动。。
   - [ ] 1416661990_2014-11-22_f749303bda20_raid56.c: btrfs_alloc_stripe_hash_table: 这个修改还算合理呀，为啥不能正确转换呢？
 - [ ] kzalloc2:
-  - [ ] 
+  - [ ]  
 - [x] ldebugfs : 每个规则都是比较局限的，基本限定在一两个函数内自己使用，整体不具有明显的公共特征。
   - [ ] 1527604184_2018-05-29_b145f49f233d_ldlm_resource.c: ldlm_debugfs_setup: not apply的原因可能是一个函数内包含三个instances，不过这三个instances是不相交的，看上去可以处理。不过这三个instances的存在数据依赖，一点点创建父目录/子目录/子子目录。同时还删除了三个goto的label，这就有点太难了？不确定是方法问题还是实现问题。
 - [ ] list_for_each_entry:
