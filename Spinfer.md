@@ -10,6 +10,7 @@
 - [ ] 并没有处理好多个variants的挑战（详见dasd_smalloc/full）
 - [ ] overlapping change instances in per function的处理方式我还没理解
 - [ ] 在实际进行代码转换生成之前，甚至可以考虑先适当调换代码的语句顺序，让语句链拥有一种“更一致”的顺序，也许可以生成更紧凑的规则
+- [ ] 对 if的condition 基本做不了任何分析，只能直接抽象成一个抽象表达式 E。因此写出来带有If的补丁也比较抽象，开发者看上去也很可能一头雾水。
 
 ## Implementation
 
@@ -19,6 +20,7 @@
 - [ ] 实验中反复提到out of scope的测试用例，但是又没有标明具体是哪些测试用例
 - [ ] recall / precision / matching recall 是如何计算出来的？迷惑行为，FP/TP的计量单位是 ***function***  or example?
 - [ ] applied partially (找到使用规则，转换也正确，但有另外一部分没有找到适用规则) / did not apply (找不到适用规则) / produced incorrect changes (找到适用规则，但转换不正确)
+- [ ] 总感觉很多实验数据的修改 ***make no sense*** ！！！
 
 ### Data analysis: challenging part
 
@@ -37,37 +39,65 @@
 - [x] drm_sched: 完美处理，简单粗暴，一个规则通吃。drm_sched_entity_init函数本身不需要处理。
 - [x] early_memunmap: 完美处理，简单粗暴，一个规则通吃
 - [ ] gpiod: 
+  - [ ] 
 - [ ] iio_device_alloc:
+  - [ ] 
 - [ ] irqdesc:
+  - [ ] 
 - [x] kees_timer1 (motivating example): 多条规则的产生原因就如同原文所述。考虑不同的语句顺序/有些 field initialization 缺失。
 - [x] kmemdup2: 完美处理，简单粗暴，一个规则通吃
-- [ ] kvfree:
+- [ ] kvfree: 这个diff种类非常稀碎，有的要检查指针非空，有的却不检查; 有的删去了指针非空检查，有的没有删去。。
+  - [ ] 1435701513_2015-06-30_c859aa83113d_util.c: ipc_free: 奇葩的地方在于这个函数前后完全一致，没有任何变动。。
+  - [ ] 1416661990_2014-11-22_f749303bda20_raid56.c: btrfs_alloc_stripe_hash_table: 这个修改还算合理呀，为啥不能正确转换呢？
 - [ ] kzalloc2:
+  - [ ] 
 - [x] ldebugfs : 每个规则都是比较局限的，基本限定在一两个函数内自己使用，整体不具有明显的公共特征。
   - [ ] 1527604184_2018-05-29_b145f49f233d_ldlm_resource.c: ldlm_debugfs_setup: not apply的原因可能是一个函数内包含三个instances，不过这三个instances是不相交的，看上去可以处理。不过这三个instances的存在数据依赖，一点点创建父目录/子目录/子子目录。同时还删除了三个goto的label，这就有点太难了？不确定是方法问题还是实现问题。
 - [ ] list_for_each_entry:
+  - [ ] 
 - [x] memdup: {kmalloc/kzalloc + memcpy} 被 kmemdup 取代。但产生了5个false positives
   - [ ] 实在没有理解这5个为啥是FP，我看都是TP嘛
 - [ ] nvmem:
+  - [ ] 
 - [x] obd: 本质上是用 kzalloc(...) 替换 OBD_ALLOC_PTR(...) , 同时要处理大量的 error-handling code (shown in if branch)。
   - [ ] 1411071842_2014-09-18_496a51bd64eb_dir.c: ll_dir_filler : 语义上说，这个例子也不能算FP。
 - [ ] pgr:
+  - [ ] 
 - [ ] platform_get_drvdata:
+  - [ ] 
 - [ ] proc_create:
+  - [ ] 
 - [x] skb_put: 三条规则，完美处理。分别考虑了语序和额外的 type cast。
 - [ ] snd_soc:
+  - [ ] 
 - [ ] stop_engine:
+  - [ ] 
 - [ ] tcaction:
-- [ ] uartlite:
-- [ ] unpopluar/at91_rtc_write:
-- [ ] unpopluar/bnx2x_pretend_func:
-- [ ] unpopluar/C_CAN_IFACE:
-- [x] unpopluar/ClearPageReserved: 两条规则，完美处理。规则2多删除了一条 - init_page_count(E0); 
-- [x] unpopluar/cpufreq_frequency_table_cpuinfo: 两条规则，完美处理。语序不同。
-- [ ] unpopluar/cpufreq_frequency_table_target:
-- [ ] unpopluar/delayed_work_pending:
-- [ ] unpopluar/sock_kzfree_s:
-- [ ] vm_area:
+  - [ ] 
+- [x] uartlite: 算是完美解决，就是diff前后API的变化和参数的对应修改，没有例外。
+  - [ ] 
+- [x] unpopular/at91_rtc_write: 情况类似于cpufreq_frequency_table_target，diff前后的函数名和diff前后使用的宏名称有关。
+  - [ ] 
+- [x] unpopular/bnx2x_pretend_func: 第一条规则直接删除了9个语句，零添加。。
+  - [ ] 
+- [x] ***unpopular/C_CAN_IFACE***: 将 read_reg 改写成read_reg32，将 write_reg 改写成 write_reg32。但FN高。
+  - [ ] FN的原因：剥皮之后还是类似的修改，但是貌似加了一层函数封装，需要新增完整的函数定义，才有可能实现这个转换，同时还要把函数赋值给对应的函数指针。
+- [x] unpopular/ClearPageReserved: 两条规则，完美处理。规则2多删除了一条 - init_page_count(E0); 
+- [x] unpopular/cpufreq_frequency_table_cpuinfo: 两条规则，完美处理。语序不同。
+- [x] unpopular/cpufreq_frequency_table_target: 这就是论文里的例子，diff后的函数名后缀竟然跟diff前被删去的宏的后缀保持一致，但一个大写，一个小写。堪称离谱？
+  - [ ] 1467001774_2016-06-27_825773609c8a_acpi-cpufreq.c: acpi_cpufreq_fast_switch: 这diff属实离谱，别的函数diff只设计到API和参数修改，但这个函数硬生生修改了一段while循环并增加了一个额外的赋值语句。
+- [x] ***unpopular/delayed_work_pending***: 给出的规则基本是把 delayed_work_pending 这个函数从 if-condition 里一删就完事。但FN很多。
+  - [ ] 1356141424_2012-12-21_ba0c96cd9a36_input.c: rfkill_schedule_ratelimited: 删去了完整的 if 结构，把接下来的两条语句组合成完整的 if 结构，分别变成condition和body。
+  - [ ] 1356141432_2012-12-21_348409a267e4_at91_udc.c: at91_vbus_timer
+  - [ ] 1357907853_2013-01-11_ed1ac6e91a3f_qos.c: pm_qos_remove_request: 这两条都是把 if-condition 删掉，保留 if-body 里的语句。猜测其他和这条类似。
+- [x] unpopular/sock_kzfree_s:那其实都对了。
+  - [ ] sock.c: 这个文件是定义了diff中牵扯到的API，并不是目标代码。
+- [x] vm_area:
+  - [ ] 1532206131_2018-07-21_3928d4f5ee37_exec.c: __bprm_mm_init: 看上去可以正常修复呀，alloc和free部分都可以。。
+  - [ ] 1532206131_2018-07-21_3928d4f5ee37_mmap.c: copy_vma: 这里的diff比较特别，把kmem_cache_alloc()替换成了vm_area_dup()，这个diff规则并没有被输出， 是缺少一定的context，和另一条输出的规则会发生替换冲突，匹配了相同的diff前的代码，但该替换成diff后的哪一种选择却无法确定。
+  - [ ] 1532206131_2018-07-21_3928d4f5ee37_mmap.c: __split_vma: 问题同上。
+  - [ ] 1532206131_2018-07-21_3928d4f5ee37_fork.c: dup_mmap: 问题同上，同时也是源头。
+  - [ ] 1532206131_2018-07-21_3928d4f5ee37_nommu.c: split_vma: 问题同上。
 - [x] wlcore: 强烈的感觉这个地方的实现出了bug，最终数据明明不可能这么低。
 
 ### Data analysis: 2018 part
