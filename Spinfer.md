@@ -46,7 +46,7 @@
   - [ ] 
 - [x] kees_timer1 (motivating example): 多条规则的产生原因就如同原文所述。考虑不同的语句顺序/有些 field initialization 缺失。
 - [x] kmemdup2: 完美处理，简单粗暴，一个规则通吃
-- [ ] kvfree: 这个diff种类非常稀碎，有的要检查指针非空，有的却不检查; 有的删去了指针非空检查，有的没有删去。。
+- [x] kvfree: 这个diff种类非常稀碎，有的要检查指针非空，有的却不检查; 有的删去了指针非空检查，有的没有删去。。
   - [ ] 1435701513_2015-06-30_c859aa83113d_util.c: ipc_free: 奇葩的地方在于这个函数前后完全一致，没有任何变动。。
   - [ ] 1416661990_2014-11-22_f749303bda20_raid56.c: btrfs_alloc_stripe_hash_table: 这个修改还算合理呀，为啥不能正确转换呢？
 - [ ] kzalloc2:
@@ -72,7 +72,7 @@
   - [ ] 
 - [ ] stop_engine:
   - [ ] 
-- [ ] tcaction:
+- [ ] tcaction: 做到 int i, rc; 等价于 int i; int rc; 容易吗？大部分规则比较雷同，区别仅在于 是否删除和添加某个 int 变量。唯独有一条规则，非常冗长，在 iterator loop内部有一串复杂的修改：因为tcf_exts_for_each_action占用了原来的循环变量i，循环体内部就要把 i 换成 k。。。
   - [ ] 
 - [x] uartlite: 算是完美解决，就是diff前后API的变化和参数的对应修改，没有例外。
   - [ ] 
